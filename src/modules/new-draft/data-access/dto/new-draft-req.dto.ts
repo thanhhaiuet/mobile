@@ -12,10 +12,10 @@ class sourceNew {
 
 @Exclude()
 export class saveNewDraftReqDto {
-	@DtoString({ expose: true, maxLength: 50 })
+	@DtoString({ expose: true, maxLength: 512 })
 	url: string;
 
-	@DtoString({ expose: true, maxLength: 50 })
+	@DtoString({ expose: true, maxLength: 252 })
 	author: string;
 
 	@DtoString({ expose: true, maxLength: 252 })
@@ -30,9 +30,15 @@ export class saveNewDraftReqDto {
 	@DtoProp(true, { type: sourceNew })
 	source: sourceNew;
 
-	@DtoString({ expose: true, maxLength: 50 })
+	@DtoString({ expose: true, maxLength: 512 })
 	urlToImage: string;
 
 	@DtoDatetime({ expose: true, optional: true })
 	publishedAt: Date;
+}
+
+@Exclude()
+export class deleteNewDraftReqDto {
+	@DtoString({ expose: true, maxLength: 512 })
+	url: string;
 }

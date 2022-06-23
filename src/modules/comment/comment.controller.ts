@@ -8,26 +8,28 @@ import { IJwtPayload } from '@modules/auth/data-access/interfaces/auth.interface
 import { HttpGet, HttpPost } from '@shared/decorators/controllers.decorator';
 
 import { CommentService } from './data-access/comment.service';
-import { addCommentREqDto } from './data-access/dto/comment-req.dto';
+import { addCommentREqDto, getListCommentReqDto } from './data-access/dto/comment-req.dto';
 
 @ApiTags('Comment')
 @Controller('comment')
 export class CommentController {
 	constructor(private readonly commentService: CommentService) {}
 
-	@HttpGet('', { guard: EUserRole.USER })
-	getComment(@Req() req) {
-		const userId = (req.user as IJwtPayload).userId;
-
-		return this.commentService.getComment(userId);
+	@HttpPost('get', { guard: EUserRole.USER })
+	getComment(@Body() body: getListCommentReqDto) {
+		return this.commentService.getComment(body.url);
 	}
 
-	@HttpPost('', { guard: EUserRole.USER })
+	@HttpPost('/', { guard: EUserRole.USER })
 	addComment(@Body() body: addCommentREqDto, @Req() req) {
-    console.log(1231231231);
-    
 		const userId = (req.user as IJwtPayload).userId;
 
 		return this.commentService.saveComment(userId, body);
+	}
+
+	@HttpGet('', { guard: EUserRole.USER })
+	listComment(@Req() req) {
+		const userId = (req.user as IJwtPayload).userId;
+		return this.commentService.listComment(userId);
 	}
 }

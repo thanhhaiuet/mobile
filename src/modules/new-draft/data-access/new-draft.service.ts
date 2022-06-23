@@ -5,6 +5,9 @@ import { Repository } from 'typeorm';
 import { NewDraftEntity } from '@entities/new-draft.entity';
 import { NewEntity } from '@entities/new.entity';
 
+import { httpNotFound } from '@shared/exceptions/http-exception';
+import { getNowUtc } from '@shared/utils/time.utils';
+
 import { saveNewDraftReqDto } from './dto/new-draft-req.dto';
 
 @Injectable()
@@ -15,7 +18,9 @@ export class NewDraftService {
 	) {}
 
 	async getNewDraft(userId: string) {
-		return this.newDraftRepo.find({ userId });
+		const drafts = await this.newDraftRepo.find({ where: { userId }, relations: ['new'] });
+
+		return drafts.map(draft => draft.new);
 	}
 
 	async saveNewDraft(userId: string, body: saveNewDraftReqDto) {
@@ -35,4 +40,34 @@ export class NewDraftService {
 
 		return this.newDraftRepo.save(newDraft);
 	}
+
+	async delete(url: string, userId: string) {
+		const news = await this.newRepo.findOne({ url });
+    
+    console.log(123);
+    
+
+		if (!news) httpNotFound('Record is not exist!');
+
+		const newDraft = await this.newDraftRepo.findOne({ userId, newId: news.id });
+
+		if (!newDraft) httpNotFound('Record is not exist!');
+
+		newDraft.deletedAt = getNowUtc();
+
+		return this.newDraftRepo.save(newDraft);
+	}
+
+	async getDetailDraft(userId: string, url: string) {
+		const news = await this.newRepo.findOne({ url });
+
+		if (!news) httpNotFound('Record is not exist!');
+
+		const draft = await this.newDraftRepo.findOne({ userId, newId: news.id });
+
+		if (!draft) httpNotFound('Draft is not exist!');
+
+		return draft;
+	}
 }
+

@@ -4,6 +4,7 @@ export enum ETableName {
 	NEW_DRAFTS = 'new_drafts',
 	COMMENT = 'comments',
 	DONATION = 'donations',
+	TIME = 'times',
 }
 
 export enum EGender {

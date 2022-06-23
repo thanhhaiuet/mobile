@@ -15,13 +15,11 @@ export class createTableComment1649645515032 implements MigrationInterface {
 					},
 					{
 						name: 'user_id',
-						isUnique: true,
 						type: 'varchar',
 						length: '50',
 					},
 					{
 						name: 'new_id',
-						isUnique: true,
 						type: 'varchar',
 						length: '50',
 					},

@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class createColumnNew1649146411890 implements MigrationInterface {
+export class createTableTime1652754215943 implements MigrationInterface {
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		return queryRunner.createTable(
 			new Table({
-				name: 'news',
+				name: 'times',
 				columns: [
 					{
 						name: 'id',
@@ -14,45 +14,19 @@ export class createColumnNew1649146411890 implements MigrationInterface {
 						length: '50',
 					},
 					{
-						name: 'author',
+						name: 'user_id',
 						type: 'varchar',
-						length: '512',
+						length: '50',
 					},
 					{
-						name: 'title',
-						type: 'varchar',
-						length: '512',
-					},
-					{
-						name: 'description',
-						type: 'text',
-					},
-					{
-						name: 'content',
-						type: 'text',
-					},
-					{
-						name: 'source',
-						type: 'json',
-					},
-					{
-						name: 'url',
-						type: 'varchar',
-						length: '255',
-					},
-					{
-						name: 'urlToImage',
-						type: 'varchar',
-						length: '255',
-					},
-					{
-						name: 'categoryId',
-						type: 'int',
-					},
-					{
-						name: 'publishedAt',
+						name: 'time_start',
 						type: 'datetime',
 					},
+					{
+						name: 'dayOfWeek',
+						type: 'int',
+					},
+
 					{
 						name: 'created_at',
 						type: 'datetime',
@@ -67,6 +41,14 @@ export class createColumnNew1649146411890 implements MigrationInterface {
 						name: 'deleted_at',
 						type: 'datetime',
 						isNullable: true,
+					},
+				],
+				foreignKeys: [
+					{
+						columnNames: ['user_id'],
+						referencedColumnNames: ['id'],
+						referencedTableName: 'users',
+						name: 'time-users',
 					},
 				],
 			}),

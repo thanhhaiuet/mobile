@@ -1,25 +1,26 @@
-import { ETableName } from "@constants/entity.constants";
-import { BaseEntityIncludeTime } from "@core/base-entity";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { INewDraftAttribute } from "./attributes/new_draft.interface";
-import { NewEntity } from "./new.entity";
-import { UserEntity } from "./user.entity";
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
-@Entity({name: ETableName.NEW_DRAFTS})
+import { ETableName } from '@constants/entity.constants';
 
-export class NewDraftEntity extends BaseEntityIncludeTime implements INewDraftAttribute{
+import { BaseEntityIncludeTime } from '@core/base-entity';
 
-  @Column({name: 'user_id', type: 'varchar', length: '50'})
-  userId: string;
+import { INewDraftAttribute } from './attributes/new_draft.interface';
+import { NewEntity } from './new.entity';
+import { UserEntity } from './user.entity';
 
-  @Column({name: 'new_id', type: 'varchar', length: '50'})
-  newId: string;
+@Entity({ name: ETableName.NEW_DRAFTS })
+export class NewDraftEntity extends BaseEntityIncludeTime implements INewDraftAttribute {
+	@Column({ name: 'user_id', type: 'varchar', length: '50' })
+	userId: string;
 
-  @ManyToOne(() => NewEntity, news => news.new_drafts)
-  @JoinColumn({name: 'new_id'})
-  new: NewEntity;
+	@Column({ name: 'new_id', type: 'varchar', length: '50' })
+	newId: string;
 
-  @ManyToOne(() => UserEntity, user => user.new_drafts)
-  @JoinColumn({name: 'user_id'})
-  user: UserEntity;
+	@ManyToOne(() => NewEntity, news => news.new_drafts)
+	@JoinColumn({ name: 'new_id' })
+	new: NewEntity;
+
+	@ManyToOne(() => UserEntity, user => user.new_drafts)
+	@JoinColumn({ name: 'user_id' })
+	user: UserEntity;
 }
