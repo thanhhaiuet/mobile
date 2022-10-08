@@ -1,40 +1,36 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 
-import { EGender, ETableName, EUserStatus } from '@constants/entity.constants';
+import { EGender, ETableName } from '@constants/entity.constants';
 
 import { BaseEntityIncludeTime } from '@core/base-entity';
 
 import { IUserAttribute } from './attributes/user.interface';
-import { CommentEntity } from './comment.entity';
-import { NewDraftEntity } from './new-draft.entity';
-import { TimeEntity } from './time.entity';
+import { ProductEntity } from './product.entity';
 
 @Entity({ name: ETableName.USERS })
 export class UserEntity extends BaseEntityIncludeTime implements IUserAttribute {
-	@Column({ type: 'text' })
-	email: string;
+  @Column({ type: 'text' })
+  email: string;
 
-	@Column({ type: 'varchar', length: '255' })
-	password: string;
+  @Column({ type: 'varchar', length: '255' })
+  password: string;
 
-	@Column({ type: 'varchar', length: '255' })
-	username: string;
+  @Column({ type: 'varchar', length: '255' })
+  username: string;
 
-	@Column({
-		name: 'privacy_updated_times',
-		type: 'int',
-		width: 11,
-		nullable: true,
-		default: 0,
-	})
-	privacyUpdatedTimes: number;
+  @Column({ type: 'varchar', length: '11' })
+  phone: string;
 
-	@OneToMany(() => CommentEntity, comment => comment.user)
-	comments: CommentEntity[];
+  @Column({
+    name: 'privacy_updated_times',
+    type: 'int',
+    width: 11,
+    nullable: true,
+    default: 0,
+  })
+  privacyUpdatedTimes: number;
 
-	@OneToMany(() => NewDraftEntity, newDraft => newDraft.user)
-	new_drafts: NewDraftEntity[];
+  @OneToMany(() => ProductEntity, product => product.user)
+  products: ProductEntity[];
 
-	@OneToMany(() => TimeEntity, time => time.new)
-	times: TimeEntity[];
 }

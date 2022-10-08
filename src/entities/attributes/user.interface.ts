@@ -6,4 +6,5 @@ export interface IUserAttribute extends IBaseIncludeDateAttribute {
   email: string;
   password: string;
   username: string;
+  phone: string;
 }

@@ -18,4 +18,9 @@ export enum ECateGoryNew {
   TECHNOLOGY,
 }
 
+export enum EStatusProduct {
+  NEW = 0,
+  PENDING = 1,
+}
+
 export const apiKey = 'bbe44b27f2ea4464a198c929c1adc49e';
