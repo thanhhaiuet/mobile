@@ -4,7 +4,7 @@
 	"port": 3306,
 	"username": "root",
 	"password": "password",
-	"database": "news",
+	"database": "cms_product",
 	"entities": ["dist/entities/*.entity.{js,ts}"],
 	"migrationsTableName": "custom_migration_table",
 	"migrations": ["dist/migrations/*.js"],

@@ -2,10 +2,10 @@ import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const config = new DocumentBuilder()
-  .setTitle('NEWS')
+  .setTitle('CMS_PRODUCT')
   .setDescription('NEWS API description')
   .setVersion('1.0')
-  .addTag('NEWS')
+  .addTag('CMS_PRODUCT')
   .addBearerAuth()
   .build();
 

@@ -1,10 +1,9 @@
 export enum ETableName {
 	USERS = 'users',
-	NEW = 'news',
-	NEW_DRAFTS = 'new_drafts',
 	COMMENT = 'comments',
-	DONATION = 'donations',
-	TIME = 'times',
+	PRODUCT = 'products',
+	CATEGORIES = 'categories',
+	ESTIMATE = 'estimates',
 }
 
 export enum EGender {

@@ -5,13 +5,13 @@ import { envValidate } from './env.validation';
 
 @Global()
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
-      validate: envValidate,
-    }),
-  ],
-  providers: [ConfigService],
-  exports: [ConfigService],
+	imports: [
+		ConfigModule.forRoot({
+			envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+			validate: envValidate,
+		}),
+	],
+	providers: [ConfigService],
+	exports: [ConfigService],
 })
 export class CustomConfigModule {}
