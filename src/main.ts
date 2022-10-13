@@ -9,20 +9,23 @@ import { AppModule } from './app.module';
 import { initSwagger } from './swagger';
 
 async function bootstrap() {
-	const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
 
-	const configService = app.get(ConfigService);
+  const configService = app.get(ConfigService);
 
-	app.setGlobalPrefix(configService.get<string>(EEnvKey.GLOBAL_PREFIX) || 'api');
-	app.enableCors();
+  app.setGlobalPrefix(configService.get<string>(EEnvKey.GLOBAL_PREFIX) || 'api');
+  app.enableCors();
 
-	// Swagger
-	if (configService.get<string>(EEnvKey.SWAGGER_PATH)) {
-		initSwagger(app, configService.get<string>(EEnvKey.SWAGGER_PATH));
-	}
+  // Swagger
+  if (configService.get<string>(EEnvKey.SWAGGER_PATH)) {
+    initSwagger(app, configService.get<string>(EEnvKey.SWAGGER_PATH));
+  }
 
-	app.useStaticAssets(join(__dirname, '../', 'static'));
+  app.useStaticAssets(join(__dirname, '../', 'images'));
 
-	await app.listen(configService.get<number>(EEnvKey.PORT) || 3000);
+  console.log(join(__dirname, '..'));
+
+
+  await app.listen(configService.get<number>(EEnvKey.PORT) || 3000);
 }
 bootstrap();

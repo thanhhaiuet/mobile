@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EntityManager, In } from 'typeorm';
+import { EntityManager, In, IsNull, Not } from 'typeorm';
 
 import { EError } from '@constants/error.constants';
 
@@ -14,60 +14,71 @@ import { CMSCategoryBodyDto, CMSCategoryReqDto, ListCategoryRqDto } from './dtos
 
 @Injectable()
 export class CategoryService {
-	constructor(private readonly categoryRepo: CategoryRepository) {}
+  constructor(private readonly categoryRepo: CategoryRepository) { }
 
-	async getCategories(options: ListCategoryRqDto) {
-		const categories = await this.categoryRepo.getCategories(options);
+  async getCategories(options: ListCategoryRqDto) {
+    const categories = await this.categoryRepo.getCategories(options);
 
-		return BasePaginationResponseDto.convertToPaginationResponse(categories, options.page);
-	}
+    return BasePaginationResponseDto.convertToPaginationResponse(categories, options.page);
+  }
 
-	async getSubcategories(id: string, options: BasePaginationRequestDto) {
-		const subcategories = await this.categoryRepo.getSubcategoriesByParentId(id, options);
+  async getSubcategories(id: string, options: BasePaginationRequestDto) {
+    const subcategories = await this.categoryRepo.getSubcategoriesByParentId(id, options);
 
-		return BasePaginationResponseDto.convertToPaginationResponse(subcategories, options.page);
-	}
+    return BasePaginationResponseDto.convertToPaginationResponse(subcategories, options.page);
+  }
 
-	async cmsGetListCategory(query: CMSCategoryReqDto) {
-		const data = await this.categoryRepo.cmsGetListCategory(query);
-		return BasePaginationResponseDto.convertToPaginationResponse(data, query.page || 1);
-	}
+  async cmsGetListCategory(query: CMSCategoryReqDto) {
+    const data = await this.categoryRepo.cmsGetListCategory(query);
+    return BasePaginationResponseDto.convertToPaginationResponse(data, query.page || 1);
+  }
 
-	async getDetailCategory(id: string) {
-		const category = await this.categoryRepo.getDetailCategory(id);
+  async getDetailCategory(id: string) {
+    const category = await this.categoryRepo.getDetailCategory(id);
 
-		if (!category) httpNotFound('Record is not exit!');
+    if (!category) httpNotFound('Record is not exit!');
 
-		return category;
-	}
+    return category;
+  }
 
-	async addNewCategory(body: CMSCategoryBodyDto) {
-		const findDuplicate = [...body.childCategory, body.parentName].filter(
-			(categoryName, index) => [...body.childCategory, body.parentName].indexOf(categoryName) !== index,
-		);
+  async addNewCategory(body: CMSCategoryBodyDto) {
+    const findDuplicate = [...body.childCategory, body.parentName].filter(
+      (categoryName, index) => [...body.childCategory, body.parentName].indexOf(categoryName) !== index,
+    );
 
-		if (findDuplicate.length !== 0) httpBadRequest(`Duplicate name [${findDuplicate}]`, EError.E_125);
+    if (findDuplicate.length !== 0) httpBadRequest(`Duplicate name [${findDuplicate}]`, EError.E_125);
 
-		const category = await this.categoryRepo.findOne({ where: { name: body.parentName } });
+    const category = await this.categoryRepo.findOne({ where: { name: body.parentName } });
 
-		if (category) httpBadRequest('Category is exit!', EError.E_125);
+    if (category) httpBadRequest('Category is exit!', EError.E_125);
 
-		await this.categoryRepo.createTransaction(this.saveMultipleCategory.bind(this, body.parentName, body));
-	}
+    await this.categoryRepo.createTransaction(this.saveMultipleCategory.bind(this, body.parentName, body));
+  }
 
-	private async saveMultipleCategory(parentName: string, data: CMSCategoryBodyDto, manager: EntityManager) {
-		const listCategory = data.childCategory.map((name, index) => {
-			return {
-				name: name,
-			};
-		});
+  private async saveMultipleCategory(parentName: string, data: CMSCategoryBodyDto, manager: EntityManager) {
+    const listCategory = data.childCategory.map((name) => {
+      return {
+        name: name,
+      };
+    });
 
-		const category = manager.create(CategoryEntity, {
-			name: parentName,
-			parentId: null,
-			subcategories: listCategory,
-		});
+    const category = manager.create(CategoryEntity, {
+      name: parentName,
+      parentId: null,
+      subcategories: listCategory,
+    });
 
-		await manager.save(category);
-	}
+    await manager.save(category);
+  }
+
+  async getSubcategoriesNoId(query: BasePaginationRequestDto) {
+    const subcategories = await this.categoryRepo.find({ parentId: Not(IsNull()) });
+
+    return subcategories
+
+    // return BasePaginationResponseDto.convertToPaginationResponse(
+    //   [subcategories, subcategories?.length],
+    //   query.page || 1,
+    // );
+  }
 }

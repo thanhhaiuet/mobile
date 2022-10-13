@@ -8,14 +8,14 @@ import { UserEntity } from '@entities/user.entity';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends BaseRepository<UserEntity> {
-	protected alias: ETableName = ETableName.USERS;
+  protected alias: ETableName = ETableName.USERS;
 
-	async test() {
-		// const qb = await this.createQueryBuilder(ETableName.USERS).select([`${this.alias}.id`]).getMany();
+  async test() {
+    // const qb = await this.createQueryBuilder(ETableName.USERS).select([`${this.alias}.id`]).getMany();
 
-		const qb = this.createQb();
-		qb.select([`${this.alias}.id`]);
+    const qb = this.createQb();
+    qb.select([`${this.alias}.id`]);
 
-		return qb.getMany();
-	}
+    return qb.getMany();
+  }
 }

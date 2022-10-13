@@ -9,52 +9,53 @@ import { optionalBooleanMapper } from '@shared/utils/transform-query';
 
 @Exclude()
 export class ListCategoryRqDto extends BasePaginationRequestDto {
-	@DtoBoolean({ expose: true, optional: true })
-	@Transform(({ value }) => optionalBooleanMapper.get(value))
-	isSubcategory: boolean;
+  @DtoBoolean({ expose: true, optional: true })
+  @Transform(({ value }) => optionalBooleanMapper.get(value))
+  isSubcategory: boolean;
 }
 
 export class CMSCategoryReqDto extends BasePaginationRequestDto {
-	@DtoString({ expose: true, maxLength: 35, optional: true })
-	name: string;
+  @DtoString({ expose: true, maxLength: 35, optional: true })
+  name: string;
 
-	@DtoEnum(EStatusCategory, { expose: true, optional: true })
-	status: EStatusCategory;
+  @DtoEnum(EStatusCategory, { expose: true, optional: true })
+  status: EStatusCategory;
 }
 
 @Exclude()
 export class CMSCategoryBodyDto {
-	@DtoString({ expose: true, maxLength: 50 })
-	parentName: string;
+  @DtoString({ expose: true, maxLength: 50 })
+  parentName: string;
 
-	@DtoProp(true)
-	@IsArray()
-	@MaxLength(50, { each: true })
-	@ArrayNotEmpty()
-	@IsString({ each: true })
-	childCategory: string[];
+  @DtoProp(true)
+  @IsArray()
+  @MaxLength(50, { each: true })
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  childCategory: string[];
 }
 
 class UpdateCategoryBodyData {
-	@DtoString({ expose: true, optional: true })
-	id: string;
+  @DtoString({ expose: true, optional: true })
+  id: string;
 
-	@DtoString({ expose: true, maxLength: 50 })
-	name: string;
+  @DtoString({ expose: true, maxLength: 50 })
+  name: string;
 }
 @Exclude()
 export class UpdateCategoryBodyDto {
-	@DtoEnum(EStatusCategory, { expose: true })
-	status: EStatusCategory;
+  @DtoEnum(EStatusCategory, { expose: true })
+  status: EStatusCategory;
 
-	@DtoString({ expose: true, maxLength: 50, optional: true })
-	parentName: string;
+  @DtoString({ expose: true, maxLength: 50, optional: true })
+  parentName: string;
 
-	@DtoProp(true, { type: [UpdateCategoryBodyData] })
-	@IsOptional()
-	@Type(() => UpdateCategoryBodyData)
-	@ValidateNested({ each: true })
-	@IsArray()
-	@ArrayNotEmpty()
-	childCategory: UpdateCategoryBodyData[];
+  @DtoProp(true, { type: [UpdateCategoryBodyData] })
+  @IsOptional()
+  @Type(() => UpdateCategoryBodyData)
+  @ValidateNested({ each: true })
+  @IsArray()
+  @ArrayNotEmpty()
+  childCategory: UpdateCategoryBodyData[];
 }
+

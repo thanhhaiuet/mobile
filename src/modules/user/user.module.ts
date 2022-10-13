@@ -9,9 +9,9 @@ import { UserService } from './data-access/user.service';
 import { UserController } from './user.controller';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([UserRepository, UserEntity]), HttpModule],
-	providers: [UserService],
-	controllers: [UserController],
-	exports: [UserService],
+  imports: [TypeOrmModule.forFeature([UserRepository, UserEntity]), HttpModule],
+  providers: [UserService],
+  controllers: [UserController],
+  exports: [UserService],
 })
-export class UserModule {}
+export class UserModule { }
