@@ -54,7 +54,7 @@ export class EstimateRepository extends BaseRepository<EstimateEntity> {
     ];
     qb.leftJoin(`${this.alias}.product`, ETableName.PRODUCT)
       .leftJoin(`${ETableName.PRODUCT}.category`, ETableName.CATEGORIES)
-      .where(`${this.alias}.userId like :userId`, { userId: userId });;
+      .where(`${this.alias}.userId = :userId`, { userId: userId });;
 
     if (query.sortBy) {
       switch (Number(query.sortBy)) {
@@ -81,6 +81,28 @@ export class EstimateRepository extends BaseRepository<EstimateEntity> {
     qb.select(selects);
 
     this.queryBuilderAddPagination(qb, { page: query.page, limit: 8, sortBy: null });
+
+    return qb.getManyAndCount();
+  }
+
+  getListEstimateOfProduct(productId: string, userId: string) {
+    const qb = this.createQb();
+    const selects = [
+      `${this.alias}.id`,
+      `${this.alias}.userId`,
+      `${this.alias}.productId`,
+      `${this.alias}.price`,
+      `${this.alias}.timeComplete`,
+      `${this.alias}.isChoose`,
+      `${ETableName.USERS}.email`,
+      `${ETableName.USERS}.username`,
+      `${ETableName.USERS}.phone`
+    ];
+    qb.leftJoin(`${this.alias}.user`, ETableName.USERS)
+      .where(`${this.alias}.userId = :userId`, { userId: userId })
+      .andWhere(`${this.alias}.productId = :productId`, { productId: productId });
+
+    qb.select(selects);
 
     return qb.getManyAndCount();
   }

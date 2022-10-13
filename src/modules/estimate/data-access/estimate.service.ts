@@ -37,4 +37,9 @@ export class EstimateService {
     const data = await this.estimateRepo.getListProductEstimated(userId, query);
     return BasePaginationResponseDto.convertToPaginationResponse([data[0], data[1]], query.page);
   }
+
+  async getListEstimateOfProduct(productId: string, userId: string) {
+    const data = await this.estimateRepo.getListEstimateOfProduct(productId, userId);
+    return BasePaginationResponseDto.convertToPaginationResponse([data[0], data[1]]);
+  }
 }

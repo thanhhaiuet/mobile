@@ -33,6 +33,12 @@ export class EstimateController {
     await this.estimateService.deleteRecord(param?.id);
   }
   
+  @HttpGet('/list/:id', { guard: EUserRole.USER })
+  getListEstimateOfProduct(@Param() param: BaseParamDto, @Req() req) {
+    const userId = (req.user as IJwtPayload).userId;
+    return this.estimateService.getListEstimateOfProduct(param.id, userId);
+  }
+
   @HttpGet('/get-list-product-estimated', { guard: EUserRole.USER })
   async getListProductEstimated(@Param() param: ListProduct, @Req() req) {
     const userId = (req.user as IJwtPayload).userId;
