@@ -25,4 +25,9 @@ export class ProductService {
   getDetailProduct(id: string) {
     return this.productRepo.findOne({ id });
   }
+
+  async getListProductCreated(userId: string, query: ListProduct) {
+    const data = await this.productRepo.getListProductCreated(userId, query);
+    return BasePaginationResponseDto.convertToPaginationResponse([data[0], data[1]], query.page);
+  }
 }

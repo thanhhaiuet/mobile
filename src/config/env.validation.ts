@@ -55,7 +55,7 @@ class EnvironmentVariables implements Record<EEnvKey, number | string> {
 	DATABASE_USER: string;
 
 	@IsString()
-	@IsNotEmpty()
+	@IsOptional()
 	DATABASE_PASSWORD: string;
 
 	@IsString()
