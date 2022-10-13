@@ -1,4 +1,6 @@
+import { ListProduct } from '@modules/product/data-access/dtos/product-request.dto';
 import { Injectable } from '@nestjs/common';
+import { BasePaginationResponseDto } from '@shared/dtos/base-request.dto';
 
 import { httpBadRequest, httpNotFound } from '@shared/exceptions/http-exception';
 
@@ -29,5 +31,15 @@ export class EstimateService {
     record.deletedAt = new Date();
 
     return this.estimateRepo.save(record);
+  }
+  
+  async getListProductEstimated(userId: string, query: ListProduct) {
+    const data = await this.estimateRepo.getListProductEstimated(userId, query);
+    return BasePaginationResponseDto.convertToPaginationResponse([data[0], data[1]], query.page);
+  }
+
+  async getListEstimateOfProduct(productId: string, userId: string) {
+    const data = await this.estimateRepo.getListEstimateOfProduct(productId, userId);
+    return BasePaginationResponseDto.convertToPaginationResponse([data[0], data[1]]);
   }
 }

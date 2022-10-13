@@ -10,6 +10,7 @@ import { BaseParamDto } from '@shared/dtos/base-request.dto';
 
 import { CreateEstimate, DetailProduct } from './data-access/dtos/estimate-request.dto';
 import { EstimateService } from './data-access/estimate.service';
+import { ListProduct } from '@modules/product/data-access/dtos/product-request.dto';
 
 @ApiTags('Estimates')
 @Controller('estimates')
@@ -30,5 +31,17 @@ export class EstimateController {
   @HttpPost('delete/:id', { isPublic: true })
   async deleteEstimate(@Param() param: BaseParamDto) {
     await this.estimateService.deleteRecord(param?.id);
+  }
+  
+  @HttpGet('/list/:id', { guard: EUserRole.USER })
+  getListEstimateOfProduct(@Param() param: BaseParamDto, @Req() req) {
+    const userId = (req.user as IJwtPayload).userId;
+    return this.estimateService.getListEstimateOfProduct(param.id, userId);
+  }
+
+  @HttpGet('/get-list-product-estimated', { guard: EUserRole.USER })
+  async getListProductEstimated(@Param() param: ListProduct, @Req() req) {
+    const userId = (req.user as IJwtPayload).userId;
+    return this.estimateService.getListProductEstimated(userId, param);
   }
 }

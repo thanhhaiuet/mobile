@@ -9,6 +9,8 @@ import { BaseParamDto } from '@shared/dtos/base-request.dto';
 
 import { CreateProductDto, ListProduct } from './data-access/dtos/product-request.dto';
 import { ProductService } from './data-access/product.service';
+import { IJwtPayload } from '@modules/auth/data-access/interfaces/auth.interface';
+import { EUserRole } from '@constants/api.constants';
 
 @ApiTags('Products')
 @Controller('products')
@@ -29,6 +31,12 @@ export class ProductController {
   @HttpGet('', { isPublic: true })
   async getProducts(@Query() query: ListProduct) {
     return this.productService.getProducts(query);
+  }
+
+  @HttpGet('/get-list-product-created', { guard: EUserRole.USER })
+  async getListProductCreated(@Param() param: ListProduct, @Req() req) {
+    const userId = (req.user as IJwtPayload).userId;
+    return this.productService.getListProductCreated(userId, param);
   }
 
   @HttpGet('/:id', { isPublic: true })
