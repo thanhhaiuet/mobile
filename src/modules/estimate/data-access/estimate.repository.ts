@@ -17,6 +17,7 @@ export class EstimateRepository extends BaseRepository<EstimateEntity> {
 
     const selects = [
       `${this.alias}.isChoose`,
+      `${this.alias}.id`,
       `${ETableName.USERS}.id`,
       `${ETableName.USERS}.email`,
       `${ETableName.USERS}.phone`,

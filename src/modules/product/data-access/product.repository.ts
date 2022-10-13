@@ -14,6 +14,10 @@ export class ProductRepository extends BaseRepository<ProductEntity> {
   protected alias: ETableName = ETableName.PRODUCT;
 
   getProducts(query: ListProduct) {
+    const categoryArray = query?.categoryId?.split(',');
+
+    console.log(categoryArray, 'asdas');
+
     const qb = this.createQb();
     const selects = [
       `${this.alias}.name`,
@@ -58,7 +62,7 @@ export class ProductRepository extends BaseRepository<ProductEntity> {
     }
 
     if (query.categoryId) {
-      qb.andWhere(`${this.alias}.categoryId IN(:...categoryId)`, { categoryId: query.categoryId });
+      qb.andWhere(`${this.alias}.categoryId IN(:...categoryId)`, { categoryId: categoryArray });
     }
 
     qb.select(selects);

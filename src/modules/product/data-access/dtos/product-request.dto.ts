@@ -96,6 +96,6 @@ export class ListProduct extends BasePaginationRequestDto {
   @DtoEnum(ESortBy, { expose: true, optional: true })
   sortBy: ESortBy;
 
-  @ApiProperty({ type: [String], required: false })
-  categoryId: string[];
+  @DtoString({ expose: true, maxLength: 1000, optional: true })
+  categoryId: string;
 }
