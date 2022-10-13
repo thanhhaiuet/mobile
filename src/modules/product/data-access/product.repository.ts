@@ -23,6 +23,7 @@ export class ProductRepository extends BaseRepository<ProductEntity> {
       `${this.alias}.priceEnd`,
       `${this.alias}.timeComplete`,
       `${this.alias}.priceStart`,
+      `${this.alias}.createdAt`,
       `${ETableName.CATEGORIES}.name`,
       `${ETableName.CATEGORIES}.id`,
       `${this.alias}.userId`,
@@ -57,12 +58,12 @@ export class ProductRepository extends BaseRepository<ProductEntity> {
     }
 
     if (query.categoryId) {
-      qb.andWhere(`${this.alias}.categoryId = :categoryId`, { categoryId: query.categoryId });
+      qb.andWhere(`${this.alias}.categoryId IN(:...categoryId)`, { categoryId: query.categoryId });
     }
 
     qb.select(selects);
 
-    this.queryBuilderAddPagination(qb, { page: query.page, limit: 8 });
+    this.queryBuilderAddPagination(qb, { page: query.page, limit: 8, sortBy: null });
 
     return qb.getManyAndCount();
   }
