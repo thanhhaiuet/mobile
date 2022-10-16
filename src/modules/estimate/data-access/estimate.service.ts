@@ -1,10 +1,11 @@
-import { ListProduct } from '@modules/product/data-access/dtos/product-request.dto';
 import { Injectable } from '@nestjs/common';
-import { BasePaginationResponseDto } from '@shared/dtos/base-request.dto';
 
+import { ListProduct } from '@modules/product/data-access/dtos/product-request.dto';
+
+import { BasePaginationResponseDto } from '@shared/dtos/base-request.dto';
 import { httpBadRequest, httpNotFound } from '@shared/exceptions/http-exception';
 
-import { CreateEstimate, DetailProduct } from './dtos/estimate-request.dto';
+import { CreateEstimate, DetailProduct, GetListProductEstimated } from './dtos/estimate-request.dto';
 import { EstimateRepository } from './estimate.repository';
 
 @Injectable()
@@ -32,8 +33,8 @@ export class EstimateService {
 
     return this.estimateRepo.save(record);
   }
-  
-  async getListProductEstimated(userId: string, query: ListProduct) {
+
+  async getListProductEstimated(userId: string, query: GetListProductEstimated) {
     const data = await this.estimateRepo.getListProductEstimated(userId, query);
     return BasePaginationResponseDto.convertToPaginationResponse([data[0], data[1]], query.page);
   }
@@ -41,5 +42,19 @@ export class EstimateService {
   async getListEstimateOfProduct(productId: string, userId: string) {
     const data = await this.estimateRepo.getListEstimateOfProduct(productId, userId);
     return BasePaginationResponseDto.convertToPaginationResponse([data[0], data[1]]);
+  }
+
+  async statisticalReceive(userId: string) {
+    return this.estimateRepo.statisticalReceive(userId);
+  }
+
+  async acceptEstimate(estimateId: string) {
+    const estimate = await this.estimateRepo.findOne({ id: estimateId });
+
+    if (!estimate) httpNotFound(' Record is not exist!');
+
+    estimate.isChoose = true;
+
+    await this.estimateRepo.save(estimate);
   }
 }

@@ -19,15 +19,21 @@ export enum ECateGoryNew {
 }
 
 export enum EStatusProduct {
-  OPEN = 0,
-  INPROGRESS = 1,
-  RESOLVE = 2,
+  OPEN = 1,
+  INPROGRESS,
+  RESOLVE,
 }
 
 export enum ESortBy {
   HIGHT_TO_LOW = 1,
   LOW_TO_HIGHT,
   NEW,
+}
+
+export enum EProfileSort {
+  OPEN = 1,
+  INPROGRESS,
+  RESOLVE,
 }
 
 export const apiKey = 'bbe44b27f2ea4464a198c929c1adc49e';

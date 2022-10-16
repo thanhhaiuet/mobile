@@ -1,14 +1,15 @@
 import { EntityRepository } from 'typeorm';
 
+import { EProfileSort, ESortBy } from '@constants/api.constants';
 import { ETableName } from '@constants/entity.constants';
 
 import { BaseRepository } from '@core/base-repository';
 
 import { EstimateEntity } from '@entities/estimate.entity';
 
-import { DetailProduct } from './dtos/estimate-request.dto';
 import { ListProduct } from '@modules/product/data-access/dtos/product-request.dto';
-import { ESortBy } from '@constants/api.constants';
+
+import { DetailProduct, GetListProductEstimated } from './dtos/estimate-request.dto';
 
 @EntityRepository(EstimateEntity)
 export class EstimateRepository extends BaseRepository<EstimateEntity> {
@@ -35,7 +36,7 @@ export class EstimateRepository extends BaseRepository<EstimateEntity> {
     return qb.getOne();
   }
 
-  getListProductEstimated(userId: string, query: ListProduct) {
+  getListProductEstimated(userId: string, query: GetListProductEstimated) {
     const qb = this.createQb();
     const selects = [
       `${this.alias}.id`,
@@ -47,6 +48,8 @@ export class EstimateRepository extends BaseRepository<EstimateEntity> {
       `${ETableName.PRODUCT}.name`,
       `${ETableName.PRODUCT}.image`,
       `${ETableName.PRODUCT}.priceStart`,
+      `${ETableName.PRODUCT}.status`,
+      `${ETableName.PRODUCT}.timeComplete`,
       `${ETableName.PRODUCT}.priceEnd`,
       `${ETableName.PRODUCT}.createdAt`,
       `${ETableName.CATEGORIES}.name`,
@@ -54,22 +57,24 @@ export class EstimateRepository extends BaseRepository<EstimateEntity> {
     ];
     qb.leftJoin(`${this.alias}.product`, ETableName.PRODUCT)
       .leftJoin(`${ETableName.PRODUCT}.category`, ETableName.CATEGORIES)
-      .where(`${this.alias}.userId = :userId`, { userId: userId });;
+      .where(`${this.alias}.userId = :userId`, { userId });
 
     if (query.sortBy) {
       switch (Number(query.sortBy)) {
-        case ESortBy.HIGHT_TO_LOW: {
-          qb.orderBy(`${this.alias}.priceStart`, 'DESC');
+        case EProfileSort.INPROGRESS: {
+          qb.andWhere(`${ETableName.PRODUCT}.status = ${EProfileSort.INPROGRESS}`).andWhere(
+            `${this.alias}.isChoose = 1`,
+          );
           break;
         }
 
-        case ESortBy.LOW_TO_HIGHT: {
-          qb.orderBy(`${this.alias}.priceStart`, 'ASC');
+        case EProfileSort.RESOLVE: {
+          qb.andWhere(`${ETableName.PRODUCT}.status = ${EProfileSort.RESOLVE}`).andWhere(`${this.alias}.isChoose = 1`);
           break;
         }
 
-        case ESortBy.NEW: {
-          qb.orderBy(`${this.alias}.createdAt`, 'DESC');
+        case 1: {
+          qb.andWhere(`${this.alias}.isChoose = 0`);
           break;
         }
 
@@ -96,14 +101,36 @@ export class EstimateRepository extends BaseRepository<EstimateEntity> {
       `${this.alias}.isChoose`,
       `${ETableName.USERS}.email`,
       `${ETableName.USERS}.username`,
-      `${ETableName.USERS}.phone`
+      `${ETableName.USERS}.phone`,
+      `${ETableName.USERS}.id`,
     ];
     qb.leftJoin(`${this.alias}.user`, ETableName.USERS)
-      .where(`${this.alias}.userId = :userId`, { userId: userId })
-      .andWhere(`${this.alias}.productId = :productId`, { productId: productId });
+      .andWhere(`${this.alias}.productId = :productId`, { productId })
+      .andWhere(`${this.alias}.isChoose = 0`)
 
     qb.select(selects);
 
     return qb.getManyAndCount();
+  }
+
+  async statisticalReceive(userId: string) {
+    const qb = this.createQb();
+
+    const qb2 = this.createQb();
+
+    qb.select('COUNT(*) as count').where(`${this.alias}.userId = :userId`, { userId });
+
+    qb2
+      .select('COUNT(*) as countResolve')
+      .leftJoin(`${this.alias}.product`, ETableName.PRODUCT)
+      .where(`${ETableName.PRODUCT}.status = 3`)
+      .andWhere(`${this.alias}.userId = :userId`, { userId });
+
+    const [data, data1] = await Promise.all([qb.getRawOne(), qb2.getRawOne()]);
+
+    return {
+      count: Number(data?.count),
+      countResolve: Number(data1?.countResolve),
+    };
   }
 }

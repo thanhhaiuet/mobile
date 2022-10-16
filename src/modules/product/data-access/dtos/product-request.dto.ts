@@ -1,7 +1,7 @@
 import { Exclude, Transform, Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
 
-import { ESortBy } from '@constants/api.constants';
+import { EProfileSort, ESortBy } from '@constants/api.constants';
 import { EStatusCategory } from '@constants/entity.constants';
 
 import { DtoBoolean, DtoEnum, DtoNumber, DtoProp, DtoString } from '@shared/decorators/dto.decorator';
@@ -99,3 +99,10 @@ export class ListProduct extends BasePaginationRequestDto {
   @DtoString({ expose: true, maxLength: 1000, optional: true })
   categoryId: string;
 }
+
+@Exclude()
+export class ListProductProfileCreated extends BasePaginationRequestDto {
+  @DtoEnum(EProfileSort, { expose: true, optional: true })
+  sortBy: EProfileSort;
+}
+
